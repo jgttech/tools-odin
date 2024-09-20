@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+# Load the script loader.
+source `pwd`/bin/scripts/script.sh
+
+# Source (import) specific scripts
+# from a specific location.
+script "pkg"
+
+# Build time environment config.
+NAME=`pkg ".name"`
+VERSION=`pkg ".version"`
+BUILD=`pkg ".build"`
+BUILD_DIR=`pwd`/$BUILD
+OUT="./$BUILD/$NAME"
+
+rm -rf $BUILD_DIR &>/dev/null
+echo "Done"

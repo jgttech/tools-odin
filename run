@@ -1,0 +1,37 @@
+#!/usr/bin/env zsh
+# Load the script loader.
+source `pwd`/bin/scripts/script.sh
+
+# Source (import) specific scripts
+# from a specific location.
+script "temp"
+script "trim"
+script "pkg"
+script "ols"
+
+# Runtime environment config.
+NAME=`pkg ".name"`
+VERSION=`pkg ".version"`
+BUILD=`pkg ".build"`
+
+temp_new $NAME
+
+cmd="odin build ."
+cmd="$cmd -out:$TMP/$NAME"
+cmd="$cmd -vet"
+cmd="$cmd -strict-style"
+
+len=`ols ".collections | length"`
+for (( i=0; i<$len; i++ )); do
+  n=`ols ".collections[$i].name"`
+  p=`ols ".collections[$i].path"`
+
+  cmd="$cmd -collection:$n=$p"
+done
+
+eval $cmd
+
+# Run the build
+$TMP/$NAME $@
+
+temp_clean
